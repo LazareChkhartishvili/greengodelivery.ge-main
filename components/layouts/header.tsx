@@ -3,7 +3,7 @@
 import { Input } from "../ui/input";
 import { Logo } from "./logo";
 import { ModeToggle } from "../shared/theme-switcher";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import LangSwitcher from "../shared/lang-switch";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
@@ -25,6 +25,7 @@ import { useScopedI18n } from "@/locales/client";
 import useSearchCustomParams from "@/hooks/useSearchCustomParams";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CartDrawer } from "./cart-drawer";
 
 const HeaderContainer = () => {
   const router = useRouter();
@@ -32,6 +33,7 @@ const HeaderContainer = () => {
   const { getQueryParamByKey } = useSearchCustomParams();
   const searchQuery = getQueryParamByKey("search") || "";
   const [searchQueryState, setSearchQueryState] = useState("");
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const searchHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,9 +110,12 @@ const HeaderContainer = () => {
 
               {/*               <HeaderButtons session={session} /> */}
               {/* CartIcon */}
-              <div className="py-[8px] px-4 flex items-center gap-2 cursor-pointer border rounded-lg">
+              <div
+                onClick={() => setIsCartOpen(true)}
+                className="py-[8px] px-3 md:px-4 flex items-center gap-2 cursor-pointer border rounded-lg"
+              >
                 <ShoppingCart size={19} />
-                {scopedT("cart")}
+                <p className="hidden md:flex">{scopedT("cart")}</p>
               </div>
               <Button
                 type="button"
@@ -126,6 +131,19 @@ const HeaderContainer = () => {
                 </a>
                 {/*     <Link href="/login">{scopedT("signIn")}</Link> */}
               </Button>
+              {/*  */}
+              {isCartOpen && (
+                <>
+                  {/* Overlay */}
+                  <div
+                    className="fixed inset-0 bg-black/40 z-40"
+                    onClick={() => setIsCartOpen(false)}
+                  />
+
+                  {/* Drawer */}
+                  <CartDrawer onClose={() => setIsCartOpen(false)} />
+                </>
+              )}
             </div>
           </div>
         </nav>
