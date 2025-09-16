@@ -1,0 +1,25 @@
+name: Deploy to Server
+"on":
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: "${{ secrets.SSH_HOST }}"
+          key: "${{ secrets.SSH_KEY }}"
+          username: "${{ secrets.SSH_USERNAME }}"
+          command_timeout: 300m
+          script: |
+            source ~/.bashrc
+            nvm use --lts || . ~/.nvm/nvm.sh && nvm use --lts
+            node -v  # Verify the correct Node.js version
+            cd /var/www/greengodelivery.ge
+            git pull
+            npm install --force
+            npm run build
+            pm2 restart greengo_front
