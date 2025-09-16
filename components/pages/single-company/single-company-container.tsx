@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import Breadcrumbs from "@/components/shared/breadcrumbs"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { routes } from "@/config/routes"
-import { CompanyResponseType } from "@/types"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
+"use client";
+import Breadcrumbs from "@/components/shared/breadcrumbs";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { routes } from "@/config/routes";
+import { CompanyResponseType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import {
   Dribbble,
   Github,
@@ -14,30 +14,30 @@ import {
   Phone,
   Search,
   SquareDashedMousePointer,
-} from "lucide-react"
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import React from "react"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
-import { Card } from "@/components/ui/card"
-import ProductCard from "@/components/shared/product-card"
-import ProductCardSkeleton from "@/components/shared/product-card-skeleton"
-import { useCurrentLocale, useScopedI18n } from "@/locales/client"
+} from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { Card } from "@/components/ui/card";
+import ProductCard from "@/components/shared/product-card";
+import ProductCardSkeleton from "@/components/shared/product-card-skeleton";
+import { useCurrentLocale, useScopedI18n } from "@/locales/client";
 
 const SingleCompanyContainer: React.FC = () => {
-   const scopedT = useScopedI18n("companyPage")
-   
-   const locale = useCurrentLocale()
-  const { slug } = useParams() ?? {}
+  const scopedT = useScopedI18n("companyPage");
+
+  const locale = useCurrentLocale();
+  const { slug } = useParams() ?? {};
   const fetchSingleCompanyData = async (): Promise<CompanyResponseType> => {
     const { data } = await axios.get(
-      `https://api.greengo.delivery/api/web/company/${slug}`
-    )
-    return data.data
-  }
+      `http://127.0.0.1:8000/api/web/company/${slug}`
+    );
+    return data.data;
+  };
   const {
     data: singleCompanyData,
     isLoading,
@@ -47,131 +47,131 @@ const SingleCompanyContainer: React.FC = () => {
     queryKey: ["singleCompanyData", slug],
     queryFn: fetchSingleCompanyData,
     enabled: !!slug,
-  })
+  });
 
-  console.log(singleCompanyData)
+  console.log(singleCompanyData);
 
   const categories = React.useMemo(
     () => singleCompanyData?.product_category ?? [],
     [singleCompanyData]
-  )
+  );
 
   const products = React.useMemo(
     () =>
       singleCompanyData?.product_category?.flatMap((cat) => cat.products) ?? [],
     [singleCompanyData]
-  )
+  );
 
   // Search functionality
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredProducts = React.useMemo(() => {
-    if (!searchTerm.trim()) return products
-    const lower = searchTerm.toLowerCase()
+    if (!searchTerm.trim()) return products;
+    const lower = searchTerm.toLowerCase();
     return products.filter(
       (p) =>
         p.name_ka?.toLowerCase().includes(lower) ||
         p.name_en?.toLowerCase().includes(lower)
-    )
-  }, [products, searchTerm])
+    );
+  }, [products, searchTerm]);
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   // New feature
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
-  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const observerRef = useRef<IntersectionObserver | null>(null)
-  const isScrollingRef = useRef(false)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const isScrollingRef = useRef(false);
 
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
-      setActiveCategory(categories[0].slug)
+      setActiveCategory(categories[0].slug);
     }
-  }, [categories, activeCategory])
+  }, [categories, activeCategory]);
 
   // Dynamically set top padding based on which category is clicked
-  const [topPadding, setTopPadding] = useState(200)
+  const [topPadding, setTopPadding] = useState(200);
 
   const setupObserver = useCallback(() => {
-    observerRef.current?.disconnect()
-    let debounceTimeout: NodeJS.Timeout
+    observerRef.current?.disconnect();
+    let debounceTimeout: NodeJS.Timeout;
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        if (isScrollingRef.current) return
+        if (isScrollingRef.current) return;
 
-        if (debounceTimeout) clearTimeout(debounceTimeout)
+        if (debounceTimeout) clearTimeout(debounceTimeout);
 
         debounceTimeout = setTimeout(() => {
-          const entry = entries.find((entry) => entry.isIntersecting)
+          const entry = entries.find((entry) => entry.isIntersecting);
           if (entry) {
-            const category = entry.target.getAttribute("data-category")
+            const category = entry.target.getAttribute("data-category");
             if (category) {
-              setActiveCategory(category)
+              setActiveCategory(category);
             }
           }
-        }, 150)
+        }, 150);
       },
       {
         root: null,
         rootMargin: `-${topPadding}px 0px -100% 0px`,
         threshold: [0, 0.25, 0.5, 0.75, 1],
       }
-    )
+    );
 
     Object.entries(categoryRefs.current).forEach(([slug, el]) => {
       if (el) {
-        el.setAttribute("data-category", slug)
-        observerRef.current?.observe(el)
+        el.setAttribute("data-category", slug);
+        observerRef.current?.observe(el);
       }
-    })
+    });
 
     return () => {
-      if (debounceTimeout) clearTimeout(debounceTimeout)
-    }
-  }, [topPadding])
+      if (debounceTimeout) clearTimeout(debounceTimeout);
+    };
+  }, [topPadding]);
 
   useEffect(() => {
-    const cleanup = setupObserver()
+    const cleanup = setupObserver();
     return () => {
-      cleanup()
-      observerRef.current?.disconnect()
-    }
-  }, [setupObserver])
+      cleanup();
+      observerRef.current?.disconnect();
+    };
+  }, [setupObserver]);
 
   const handleCategoryClick = (slug: string) => {
-    setSearchTerm("") // Clear search term when clicking a category
-    const isMobile = window.innerWidth < 768
-    setActiveCategory(slug)
+    setSearchTerm(""); // Clear search term when clicking a category
+    const isMobile = window.innerWidth < 768;
+    setActiveCategory(slug);
     setTopPadding((prev) =>
       isMobile
         ? 100
         : categories.length > 0 && slug === categories[0].slug
         ? 200
         : 105
-    )
-    isScrollingRef.current = true
-  }
+    );
+    isScrollingRef.current = true;
+  };
 
   useEffect(() => {
-    if (!activeCategory) return
-    const element = document.getElementById(`faq-${activeCategory}`)
+    if (!activeCategory) return;
+    const element = document.getElementById(`faq-${activeCategory}`);
     if (element) {
-      element.style.scrollMargin = `${topPadding}px`
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      element.style.scrollMargin = `${topPadding}px`;
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
       setTimeout(() => {
-        isScrollingRef.current = false
-      }, 1000)
+        isScrollingRef.current = false;
+      }, 1000);
     }
-  }, [activeCategory, topPadding])
+  }, [activeCategory, topPadding]);
 
   const breadcrumbData = [
-    { label: scopedT('main'), href: "/" },
-    { label: scopedT('allObjects'), href: routes.company.companies },
+    { label: scopedT("main"), href: "/" },
+    { label: scopedT("allObjects"), href: routes.company.companies },
     { label: singleCompanyData?.name_ka },
-  ]
+  ];
 
   return (
     <div className="container px-4 xl:px-0 max-w-7xl">
@@ -203,7 +203,11 @@ const SingleCompanyContainer: React.FC = () => {
               "md:w-[260px]", // Desktop width
               "rounded-md" // Remove border radius on mobile
             )}
-            placeholder={`Search in ${ locale === "ka" ? singleCompanyData?.name_ka : singleCompanyData?.name_en}`}
+            placeholder={`Search in ${
+              locale === "ka"
+                ? singleCompanyData?.name_ka
+                : singleCompanyData?.name_en
+            }`}
             onChange={searchHandler}
             value={searchTerm}
           />
@@ -273,17 +277,17 @@ const SingleCompanyContainer: React.FC = () => {
                 </div>
               ) : (
                 categories.map((cat) => {
-                  const slug = cat.slug
+                  const slug = cat.slug;
                   const categoryItems = products.filter(
-                    (item) => item.product_category_slug === slug
-                  )
+                    (item) => item.product_category_slug === cat.slug
+                  );
 
                   return (
                     <div
                       key={slug}
                       id={`faq-${slug}`}
                       ref={(el) => {
-                        categoryRefs.current[slug] = el
+                        categoryRefs.current[slug] = el;
                       }}
                       className={cn("rounded-md bg-background", "p-4 border")}
                       style={{ scrollMargin: `${topPadding}px` }}
@@ -294,7 +298,7 @@ const SingleCompanyContainer: React.FC = () => {
                             activeCategory === slug ? "text-primary" : ""
                           }`}
                         >
-                           {locale === "ka" ? cat.name_ka : cat.name_en}
+                          {locale === "ka" ? cat.name_ka : cat.name_en}
                         </p>
                         <div className="container  grid gap-x-4 gap-y-8 lg:grid-cols-2">
                           {categoryItems.map((item, index) => (
@@ -303,7 +307,7 @@ const SingleCompanyContainer: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                  )
+                  );
                 })
               )}
             </div>
@@ -328,19 +332,21 @@ const SingleCompanyContainer: React.FC = () => {
             <aside className="sticky top-24 h-fit ">
               <div className="p-4 bg-background border rounded-md">
                 <h3 className="font-bold font text-lg mb-2">
-                  {locale === "ka" ? singleCompanyData?.name_ka : singleCompanyData?.name_en}
-                  
+                  {locale === "ka"
+                    ? singleCompanyData?.name_ka
+                    : singleCompanyData?.name_en}
                 </h3>
                 <p className="mb-2 line-clamp-2 ">
-                
-                   {locale === "ka" ? singleCompanyData?.description_ka : singleCompanyData?.description_en}
+                  {locale === "ka"
+                    ? singleCompanyData?.description_ka
+                    : singleCompanyData?.description_en}
                 </p>
                 <div className="flex flex-col gap-2 ">
                   <span className="text-sm text-muted-foreground">
                     {scopedT("email")} {singleCompanyData?.email || "N/A"}
                   </span>
                   <span className="text-sm text-muted-foreground">
-                     {scopedT("phone")} {singleCompanyData?.phone || "N/A"}
+                    {scopedT("phone")} {singleCompanyData?.phone || "N/A"}
                   </span>
                 </div>
                 {singleCompanyData?.address_latitude &&
@@ -364,7 +370,7 @@ const SingleCompanyContainer: React.FC = () => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default SingleCompanyContainer
+export default SingleCompanyContainer;

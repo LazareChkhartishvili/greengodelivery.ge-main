@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import { ChevronRight, SquareDashedMousePointer } from "lucide-react"
+"use client";
+import { ChevronRight, SquareDashedMousePointer } from "lucide-react";
 
-import { Card } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { routes } from "@/config/routes"
-import { useScopedI18n } from "@/locales/client"
-import { CompanyResponseType } from "@/types"
-import axios from "axios"
-import { useQuery } from "@tanstack/react-query"
-import CompanyCard from "../shared/company-card"
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { routes } from "@/config/routes";
+import { useScopedI18n } from "@/locales/client";
+import { CompanyResponseType } from "@/types";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import CompanyCard from "../shared/company-card";
 
 const ObjectContainer = () => {
-  const scopedT = useScopedI18n("mainPage")
+  const scopedT = useScopedI18n("mainPage");
   const fetchCompanyListData = async (): Promise<CompanyResponseType[]> => {
     const { data } = await axios.get(
-      `https://api.greengo.delivery/api/web/home/company-list`
-    )
-    return data.data.slice(0, 3) // Limit to 3 elements
-  }
+      `http://127.0.0.1:8000/api/web/home/company-list`
+    );
+    return data.data.slice(0, 3); // Limit to 3 elements
+  };
 
   const {
     data: companyListData,
@@ -31,7 +31,7 @@ const ObjectContainer = () => {
   } = useQuery<CompanyResponseType[]>({
     queryKey: ["companyListData"],
     queryFn: fetchCompanyListData,
-  })
+  });
   return (
     <section className="lg:py-32 py-10 flex items-center justify-center">
       <div className="container px-4 xl:px-0 max-w-7xl">
@@ -43,7 +43,7 @@ const ObjectContainer = () => {
             href={routes.company.companies}
             className="bg-green-50 hover:bg-green-100   dark:hover:bg-primary/90  text-primary py-1 px-3 rounded-md flex items-center dark:bg-primary dark:text-white text-xs font sm:text-sm"
           >
-            {scopedT('viewAll')}
+            {scopedT("viewAll")}
           </Link>
         </div>
 
@@ -65,7 +65,7 @@ const ObjectContainer = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default ObjectContainer
+export default ObjectContainer;

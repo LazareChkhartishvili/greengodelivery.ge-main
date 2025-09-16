@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+"use client";
 
-import { routes } from "@/config/routes"
-import { Separator } from "@/components/ui/separator"
-import { IconShoppingCart } from "@tabler/icons-react"
+import { routes } from "@/config/routes";
+import { Separator } from "@/components/ui/separator";
+import { IconShoppingCart } from "@tabler/icons-react";
 import {
   ChevronRight,
   SquareDashedMousePointer,
@@ -11,21 +11,21 @@ import {
   Flower2,
   ChefHat,
   PackageOpen,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { useScopedI18n } from "@/locales/client"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-import { CategoryResponseType } from "@/types"
-import CategoryCard from "../shared/category-card"
+import { Card, CardContent } from "@/components/ui/card";
+import { useScopedI18n } from "@/locales/client";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { CategoryResponseType } from "@/types";
+import CategoryCard from "../shared/category-card";
 
 type Step = {
-  title: string
-  description: string
-  icon: React.ReactNode
-}
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+};
 const steps: Step[] = [
   {
     title: "საკვები",
@@ -62,17 +62,17 @@ const steps: Step[] = [
       <Flower2 className="size-10 stroke-white transition-all ease-in-out group-hover:size-12" />
     ),
   },
-]
+];
 
 const CategoryContainer = () => {
-  const scopedT = useScopedI18n("mainPage")
+  const scopedT = useScopedI18n("mainPage");
 
   const fetchCategoryListData = async (): Promise<CategoryResponseType[]> => {
     const { data } = await axios.get(
       `https://api.greengo.delivery/api/web/home/category-list`
-    )
-    return data.data
-  }
+    );
+    return data.data;
+  };
 
   const {
     data: categoryListData,
@@ -82,7 +82,7 @@ const CategoryContainer = () => {
   } = useQuery<CategoryResponseType[]>({
     queryKey: ["categoryListData"],
     queryFn: fetchCategoryListData,
-  })
+  });
   return (
     <section className="lg:py-32 py-10 flex items-center justify-center bg-muted">
       <div className="container px-4 xl:px-0 max-w-7xl">
@@ -94,7 +94,7 @@ const CategoryContainer = () => {
             href={routes.category.categories}
             className="bg-green-50 hover:bg-green-100   dark:hover:bg-primary/90  text-primary py-1 px-3 rounded-md flex items-center dark:bg-primary dark:text-white text-xs font sm:text-sm"
           >
-           {scopedT("viewAll")}
+            {scopedT("viewAll")}
           </Link>
         </div>
         <Separator className="mt-3 mb-8 dark:bg-slate-700/70" />
@@ -106,7 +106,7 @@ const CategoryContainer = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default CategoryContainer
+export default CategoryContainer;

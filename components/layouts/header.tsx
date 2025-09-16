@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { Input } from "../ui/input";
+import { cartApi } from "@/lib/cart-api";
+import { getCartTokenLS, setCartTokenLS } from "@/lib/cart-token";
 import { Logo } from "./logo";
 import { ModeToggle } from "../shared/theme-switcher";
 import { ShoppingCart, X } from "lucide-react";
@@ -34,6 +36,7 @@ const HeaderContainer = () => {
   const searchQuery = getQueryParamByKey("search") || "";
   const [searchQueryState, setSearchQueryState] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [totalQty, setTotalQty] = useState(0);
 
   const searchHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +64,16 @@ const HeaderContainer = () => {
       if (searchTimeout.current) clearTimeout(searchTimeout.current);
     };
   }, [searchQuery]);
+
+  useEffect(() => {
+    (async () => {
+      const existing = getCartTokenLS();
+      const token = await cartApi.init(existing || undefined);
+      setCartTokenLS(token);
+      const cart = await cartApi.get(token);
+      setTotalQty(cart?.total_qty || 0);
+    })();
+  }, []);
 
   /*   const scopedT = await getScopedI18n("header")
 
@@ -107,14 +120,18 @@ const HeaderContainer = () => {
               >
                 <Search className="!h-5 !w-5" />
               </Button> */}
-
               {/*               <HeaderButtons session={session} /> */}
-              {/* CartIcon */}
+              {/* CartIcon */}{" "}
               <div
                 onClick={() => setIsCartOpen(true)}
-                className="py-[8px] px-3 md:px-4 flex items-center gap-2 cursor-pointer border rounded-lg"
+                className="py-[8px] px-3 md:px-4 flex items-center gap-2 cursor-pointer border rounded-lg relative"
               >
                 <ShoppingCart size={19} />
+                {totalQty > 0 && (
+                  <span className="absolute -top-2 -right-2 text-xs bg-primary text-white rounded-full px-1.5 py-0.5">
+                    {totalQty}
+                  </span>
+                )}
                 <p className="hidden md:flex">{scopedT("cart")}</p>
               </div>
               <Button
@@ -134,14 +151,21 @@ const HeaderContainer = () => {
               {/*  */}
               {isCartOpen && (
                 <>
-                  {/* Overlay */}
                   <div
                     className="fixed inset-0 bg-black/40 z-40"
                     onClick={() => setIsCartOpen(false)}
                   />
-
-                  {/* Drawer */}
-                  <CartDrawer onClose={() => setIsCartOpen(false)} />
+                  <CartDrawer
+                    onClose={async () => {
+                      setIsCartOpen(false);
+                      const token = getCartTokenLS();
+                      if (token) {
+                        const cart = await cartApi.get(token);
+                        setTotalQty(cart?.total_qty || 0);
+                      }
+                    }}
+                    onCartChange={(qty: number) => setTotalQty(qty)}
+                  />
                 </>
               )}
             </div>

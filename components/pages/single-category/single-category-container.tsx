@@ -1,102 +1,117 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import CompanyCard from "@/components/shared/company-card"
-import Breadcrumbs from "@/components/shared/breadcrumbs"
-import { Separator } from "@/components/ui/separator"
-import { routes } from "@/config/routes"
-import { CompanyResponseType } from "@/types"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-import { Search, SquareDashedMousePointer } from "lucide-react"
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
-import { useScopedI18n } from "@/locales/client"
+"use client";
+import CompanyCard from "@/components/shared/company-card";
+import Breadcrumbs from "@/components/shared/breadcrumbs";
+import { Separator } from "@/components/ui/separator";
+import { routes } from "@/config/routes";
+import { CompanyResponseType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useParams } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import { useScopedI18n } from "@/locales/client";
 
 const SingleCategoryContainer: React.FC = () => {
-   const scopedT = useScopedI18n("categoryPage")
-  const { slug } = useParams<{ slug: string }>()
+  const scopedT = useScopedI18n("categoryPage");
+  const { slug } = useParams<{ slug: string }>();
+
+  console.log("[CategoryPage] slug:", slug);
+
   const fetchSingleCategoryData = async (): Promise<CompanyResponseType[]> => {
+    console.log("[CategoryPage] fetching companies for category:", slug);
     const { data } = await axios.get(
-      `https://api.greengo.delivery/api/web/filter/tskhaltubo/${slug}`
-    )
-    return data.data
-  }
+      `http://127.0.0.1:8000/api/web/category/${slug}`
+    );
+    console.log("[CategoryPage] raw response:", data);
+    return data?.data ?? data; // თუ data.data არ არის, დააბრუნე data
+  };
 
   const {
     data: singleCategoryData,
     isLoading,
     isError,
+    error,
     refetch,
-  } = useQuery<CompanyResponseType[]>({
-    queryKey: ["singleCategoryData"],
+  } = useQuery<CompanyResponseType[], Error>({
+    queryKey: ["singleCategoryData", slug],
     queryFn: fetchSingleCategoryData,
-  })
+    enabled: !!slug,
+  });
+
+  console.log("[CategoryPage] isLoading:", isLoading);
+  console.log("[CategoryPage] isError:", isError, "error:", error?.message);
+  console.log(
+    "[CategoryPage] singleCategoryData:",
+    Array.isArray(singleCategoryData)
+      ? `array(${singleCategoryData.length})`
+      : typeof singleCategoryData,
+    singleCategoryData
+  );
 
   // Search
-  const [searchTerm, setSearchTerm] = useState<string>("")
-  const [filteredCompanies, setFilteredCompanies] = useState<
-    CompanyResponseType[]
-  >([])
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const filteredCompanies = useMemo(() => {
+    const source = singleCategoryData ?? [];
+    if (!searchTerm.trim()) return source;
+    const lower = searchTerm.toLowerCase();
+    const filtered = source.filter((item) => {
+      const ka = item.name_ka?.toLowerCase() ?? "";
+      const en = item.name_en?.toLowerCase() ?? "";
+      return ka.includes(lower) || en.includes(lower);
+    });
+    console.log("[CategoryPage] filteredCompanies:", filtered.length);
+    return filtered;
+  }, [singleCategoryData, searchTerm]);
 
-  useEffect(() => {
-    if (singleCategoryData) {
-      setFilteredCompanies(singleCategoryData)
-    }
-  }, [singleCategoryData])
-  const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
-    const searchValue = e.target.value.toLowerCase()
-
-    if (searchValue === "") {
-      setFilteredCompanies(singleCategoryData || [])
-    } else {
-      const filteredData = singleCategoryData?.filter((item) => {
-        return (
-          item.name_ka?.toLowerCase().includes(searchValue) ||
-          item.name_en?.toLowerCase().includes(searchValue)
-        )
-      })
-      setFilteredCompanies(filteredData || [])
-    }
-  }
   const breadcrumbData = [
-    { label:  scopedT("main"), href: "/" },
-    { label:  scopedT("allCategories"), href: routes.category.categories },
+    { label: scopedT("main"), href: "/" },
+    { label: scopedT("allCategories"), href: routes.category.categories },
     { label: slug },
-  ]
-  
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="container px-4 xl:px-0 max-w-7xl">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container px-4 xl:px-0 max-w-7xl">
+        <p className="text-red-500">Error: {error?.message}</p>
+      </div>
+    );
+  }
+
+  if (!singleCategoryData || singleCategoryData.length === 0) {
+    console.log("[CategoryPage] No companies for category:", slug);
+    return (
+      <div className="container px-4 xl:px-0 max-w-7xl">
+        <Breadcrumbs data={breadcrumbData} />
+        <Separator className="mt-3 mb-8" />
+        <p className="text-muted-foreground">
+          ვერ მოიძებნა კომპანიები ამ კატეგორიაში.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="container px-4 xl:px-0 max-w-7xl">
       <div className="flex justify-between ">
-        {/* <div className="flex items-center justify-between text-sm sm:hidden">
-          <div className="flex items-center w-full gap-1 pt-14 lg:pt-0 text-muted-foreground">
-            <SquareDashedMousePointer className="size-5 text-primary" />
-            <p className="text-2xl font lg:text-3xl">{slug}</p>
-          </div>
-        </div> */}
-
         <Breadcrumbs data={breadcrumbData} />
-        {/*         <div className="relative hidden md:block">
-          <Search className="h-5 w-5 absolute mt-2 ml-2.5" />
-          <Input
-            className="pl-9 bg-white dark:bg-background w-[260px]"
-            placeholder="ძებნა"
-            value={searchTerm}
-            onChange={searchHandler}
-          />
-        </div> */}
       </div>
       <Separator className="mt-3 mb-8" />
 
-      <div className="grid grid-cols-1  sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8">
-        {filteredCompanies?.map((company) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8">
+        {filteredCompanies.map((company) => (
           <CompanyCard key={company.slug} company={company} />
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SingleCategoryContainer
+export default SingleCategoryContainer;

@@ -1,10 +1,10 @@
-import type { Metadata } from "next"
-import "./globals.css"
-import { Toaster } from "@/components/ui/sonner"
-import Providers from "@/providers"
-import { getServerSession } from "next-auth"
-import { authOptions } from "../lib/auth"
-import AuthProvider from "../api/auth/[...nextauth]/auth-provider"
+import type { Metadata } from "next";
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import Providers from "@/providers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../lib/auth";
+import AuthProvider from "../api/auth/[...nextauth]/auth-provider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -36,20 +36,20 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
-}
+};
 
 export default async function RootLayout({
   children,
   params,
 }: Readonly<{
-  children: React.ReactNode
-  params: Promise<{ locale: string }>
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
-  const { locale } = await params
-  const session = (await getServerSession(authOptions)) as undefined
+  const { locale } = await params;
+  const session = (await getServerSession(authOptions)) as undefined;
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body className={` antialiased invisible-scrollbar`}>
         <AuthProvider session={session}>
           <Providers locale={locale}>
@@ -59,5 +59,5 @@ export default async function RootLayout({
         </AuthProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import React from "react"
-import CategoryCard from "@/components/shared/category-card"
-import { Separator } from "@/components/ui/separator"
-import { SquareDashedMousePointer } from "lucide-react"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-import { CategoryResponseType } from "@/types"
-import CategoryCardSkeleton from "@/components/shared/category-card-skeleton"
-import Breadcrumbs from "@/components/shared/breadcrumbs"
-import { useScopedI18n } from "@/locales/client"
+"use client";
+import React from "react";
+import CategoryCard from "@/components/shared/category-card";
+import { Separator } from "@/components/ui/separator";
+import { SquareDashedMousePointer } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { CategoryResponseType } from "@/types";
+import CategoryCardSkeleton from "@/components/shared/category-card-skeleton";
+import Breadcrumbs from "@/components/shared/breadcrumbs";
+import { useScopedI18n } from "@/locales/client";
 
 const CategoriesContainer: React.FC = () => {
-   const scopedT = useScopedI18n("categoryPage")
+  const scopedT = useScopedI18n("categoryPage");
   const fetchCategoryListData = async (): Promise<CategoryResponseType[]> => {
     const { data } = await axios.get(
-      `https://api.greengo.delivery/api/web/home/category-list`
-    )
-    return data.data
-  }
+      `http://127.0.0.1:8000/api/web/home/category-list`
+    );
+    return data.data;
+  };
 
   const {
     data: categoryListData,
@@ -28,12 +28,12 @@ const CategoriesContainer: React.FC = () => {
   } = useQuery<CategoryResponseType[]>({
     queryKey: ["categoryListData"],
     queryFn: fetchCategoryListData,
-  })
+  });
 
   const breadcrumbData = [
-    { label: scopedT('main'), href: "/" },
-    { label: scopedT('allCategories') },
-  ]
+    { label: scopedT("main"), href: "/" },
+    { label: scopedT("allCategories") },
+  ];
 
   return (
     <div className="container px-4 xl:px-0 max-w-7xl">
@@ -59,7 +59,7 @@ const CategoriesContainer: React.FC = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CategoriesContainer
+export default CategoriesContainer;

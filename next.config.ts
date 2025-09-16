@@ -1,4 +1,4 @@
-import type { NextConfig } from "next"
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
@@ -11,12 +11,18 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "api.greengo.delivery",
         port: "",
         pathname: "/**",
-      }
+      },
     ],
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
