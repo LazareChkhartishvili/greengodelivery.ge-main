@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 
-const BASE = "http://127.0.0.1:8000/api/web";
+const BASE = process.env.NEXT_PUBLIC_API_URL + "/api/web";
 
 export const cartApi = {
   async init(existing?: string): Promise<string> {
