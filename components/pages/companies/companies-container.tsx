@@ -20,7 +20,7 @@ const CompaniesContainer: React.FC = () => {
   const searchQuery = getQueryParamByKey("search") || "";
   const fetchCompanyListData = async (): Promise<CompanyResponseType[]> => {
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/web/search?search=${searchQuery}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/web/search?search=${searchQuery}`
     );
     return data.data;
   };
