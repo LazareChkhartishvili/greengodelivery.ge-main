@@ -15,7 +15,7 @@ const CategoriesContainer: React.FC = () => {
   const scopedT = useScopedI18n("categoryPage");
   const fetchCategoryListData = async (): Promise<CategoryResponseType[]> => {
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/web/home/category-list`
+      `${process.env.NEXT_PUBLIC_API_URL}/web/home/category-list`
     );
     return data.data;
   };

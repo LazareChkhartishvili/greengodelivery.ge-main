@@ -18,7 +18,7 @@ const ObjectContainer = () => {
   const scopedT = useScopedI18n("mainPage");
   const fetchCompanyListData = async (): Promise<CompanyResponseType[]> => {
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/web/home/company-list`
+      `${process.env.NEXT_PUBLIC_API_URL}/web/home/company-list`
     );
     return data.data.slice(0, 3); // Limit to 3 elements
   };

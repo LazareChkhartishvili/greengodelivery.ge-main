@@ -20,7 +20,7 @@ const SingleCategoryContainer: React.FC = () => {
   const fetchSingleCategoryData = async (): Promise<CompanyResponseType[]> => {
     console.log("[CategoryPage] fetching companies for category:", slug);
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/web/category/${slug}`
+      `${process.env.NEXT_PUBLIC_API_URL}/web/category/${slug}`
     );
     console.log("[CategoryPage] raw response:", data);
     return data?.data ?? data; // თუ data.data არ არის, დააბრუნე data

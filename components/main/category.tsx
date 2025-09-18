@@ -69,7 +69,7 @@ const CategoryContainer = () => {
 
   const fetchCategoryListData = async (): Promise<CategoryResponseType[]> => {
     const { data } = await axios.get(
-      `https://api.greengo.delivery/api/web/home/category-list`
+      `${process.env.NEXT_PUBLIC_API_URL}/web/home/category-list`
     );
     return data.data;
   };

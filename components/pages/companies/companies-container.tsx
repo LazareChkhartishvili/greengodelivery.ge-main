@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import React, { useEffect, useState } from "react"
-import CompanyCard from "@/components/shared/company-card"
-import { Separator } from "@/components/ui/separator"
-import { Search, SquareDashedMousePointer } from "lucide-react"
-import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import axios from "axios"
-import { useQuery } from "@tanstack/react-query"
-import { CompanyResponseType } from "@/types"
-import CompanyCardSkeleton from "@/components/shared/company-card-skeleton"
-import useSearchCustomParams from "@/hooks/useSearchCustomParams"
-import Breadcrumbs from "@/components/shared/breadcrumbs"
-import { useScopedI18n } from "@/locales/client"
+"use client";
+import React, { useEffect, useState } from "react";
+import CompanyCard from "@/components/shared/company-card";
+import { Separator } from "@/components/ui/separator";
+import { Search, SquareDashedMousePointer } from "lucide-react";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { CompanyResponseType } from "@/types";
+import CompanyCardSkeleton from "@/components/shared/company-card-skeleton";
+import useSearchCustomParams from "@/hooks/useSearchCustomParams";
+import Breadcrumbs from "@/components/shared/breadcrumbs";
+import { useScopedI18n } from "@/locales/client";
 
 const CompaniesContainer: React.FC = () => {
-  const scopedT = useScopedI18n("companyPage")
-  const { getQueryParamByKey } = useSearchCustomParams()
-  const searchQuery = getQueryParamByKey("search") || ""
+  const scopedT = useScopedI18n("companyPage");
+  const { getQueryParamByKey } = useSearchCustomParams();
+  const searchQuery = getQueryParamByKey("search") || "";
   const fetchCompanyListData = async (): Promise<CompanyResponseType[]> => {
     const { data } = await axios.get(
-      `https://api.greengo.delivery/api/web/search?search=${searchQuery}`
-    )
-    return data.data
-  }
+      `${process.env.NEXT_PUBLIC_API_URL}/web/search?search=${searchQuery}`
+    );
+    return data.data;
+  };
 
   const {
     data: companyListData,
@@ -33,7 +33,7 @@ const CompaniesContainer: React.FC = () => {
   } = useQuery<CompanyResponseType[]>({
     queryKey: ["companyListData", searchQuery],
     queryFn: fetchCompanyListData,
-  })
+  });
 
   /*   // Search
   const [searchTerm, setSearchTerm] = useState<string>("")
@@ -64,14 +64,14 @@ const CompaniesContainer: React.FC = () => {
   } */
 
   const breadcrumbData = [
-    { label: scopedT('main'), href: "/" },
+    { label: scopedT("main"), href: "/" },
     ...(searchQuery
       ? [
           { label: scopedT("allObjects"), href: "/companies" },
           { label: `ძებნა: ${searchQuery}` },
         ]
       : [{ label: scopedT("allObjects") }]),
-  ]
+  ];
   //{locale === 'ka' ? company.name_ka : company.name_en}
 
   return (
@@ -114,7 +114,7 @@ const CompaniesContainer: React.FC = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CompaniesContainer
+export default CompaniesContainer;

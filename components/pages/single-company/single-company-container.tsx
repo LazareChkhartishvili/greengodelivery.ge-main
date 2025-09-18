@@ -34,7 +34,7 @@ const SingleCompanyContainer: React.FC = () => {
   const { slug } = useParams() ?? {};
   const fetchSingleCompanyData = async (): Promise<CompanyResponseType> => {
     const { data } = await axios.get(
-      `http://127.0.0.1:8000/api/web/company/${slug}`
+      `${process.env.NEXT_PUBLIC_API_URL}/web/company/${slug}`
     );
     return data.data;
   };
