@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+"use client";
 
-import { Card, CardContent } from "../ui/card"
-import { IconShoppingCart } from "@tabler/icons-react"
-import { Pill, Flower2, ChefHat, PackageOpen } from "lucide-react"
-import { CategoryResponseType } from "@/types"
-import { routes } from "@/config/routes"
-import Link from "next/link"
-import { useCurrentLocale } from "@/locales/client"
+import { Card, CardContent } from "../ui/card";
+import { IconShoppingCart } from "@tabler/icons-react";
+import { Pill, Flower2, ChefHat, PackageOpen } from "lucide-react";
+import { CategoryResponseType } from "@/types";
+import { routes } from "@/config/routes";
+import Link from "next/link";
+import { useCurrentLocale } from "@/locales/client";
+import Image from "next/image";
 
 function CategoryCard({ category }: { category: CategoryResponseType }) {
-  const locale = useCurrentLocale()
+  const locale = useCurrentLocale();
   return (
     <Link
       key={category.slug}
@@ -36,11 +37,13 @@ function CategoryCard({ category }: { category: CategoryResponseType }) {
               </div>
             )}
           </div> */}
-          <div className="flex size-20 items-center justify-center rounded-3xl bg-primary group-hover:scale-110 transition-transform duration-300">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: category.svg ?? "",
-              }}
+          <div className="flex size-20 items-center justify-center rounded-3xl overflow-hidden group-hover:scale-110 transition-transform duration-300">
+            <Image
+              src={category.picture || "/fallback-image.jpg"}
+              alt={locale === "ka" ? category.name_ka : category.name_en}
+              width={80}
+              height={80}
+              className="w-full h-full object-cover"
             />
           </div>
           <div className="flex w-full flex-col items-center gap-4 px-4 pt-5 ">
@@ -51,7 +54,7 @@ function CategoryCard({ category }: { category: CategoryResponseType }) {
         </CardContent>
       </Card>
     </Link>
-  )
+  );
 }
 
-export default CategoryCard
+export default CategoryCard;

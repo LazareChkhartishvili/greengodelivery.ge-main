@@ -5,19 +5,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "images.pexels.com",
+        hostname: "**",
         port: "",
         pathname: "/**",
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "greengo-api-production.up.railway.app",
+        protocol: "http",
+        hostname: "**",
         port: "",
         pathname: "/**",
       },
