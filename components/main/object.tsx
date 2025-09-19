@@ -22,8 +22,14 @@ const ObjectContainer = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/web/home/company-list`
       );
       return data.data.slice(0, 3); // Limit to 3 elements
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch company list:", error);
+
+      // Check if it's a CORS error
+      if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
+        console.error("CORS or network error detected");
+      }
+
       throw error;
     }
   };
