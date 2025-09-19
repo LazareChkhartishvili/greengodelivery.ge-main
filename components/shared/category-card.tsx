@@ -37,12 +37,12 @@ function CategoryCard({ category }: { category: CategoryResponseType }) {
               </div>
             )}
           </div> */}
-          <div className="flex size-20 items-center justify-center rounded-3xl overflow-hidden group-hover:scale-110 transition-transform duration-300">
+          <div className="flex size-40 items-center justify-center rounded-3xl overflow-hidden group-hover:scale-110 transition-transform duration-300">
             <Image
-              src={category.picture || "/fallback-image.jpg"}
+              src={category.picture || "/fallback-image.svg"}
               alt={locale === "ka" ? category.name_ka : category.name_en}
-              width={80}
-              height={80}
+              width={340}
+              height={140}
               className="w-full h-full object-cover"
             />
           </div>
