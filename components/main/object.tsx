@@ -17,10 +17,15 @@ import CompanyCard from "../shared/company-card";
 const ObjectContainer = () => {
   const scopedT = useScopedI18n("mainPage");
   const fetchCompanyListData = async (): Promise<CompanyResponseType[]> => {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/web/home/company-list`
-    );
-    return data.data.slice(0, 3); // Limit to 3 elements
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/web/home/company-list`
+      );
+      return data.data.slice(0, 3); // Limit to 3 elements
+    } catch (error) {
+      console.error("Failed to fetch company list:", error);
+      throw error;
+    }
   };
 
   const {
@@ -31,6 +36,9 @@ const ObjectContainer = () => {
   } = useQuery<CompanyResponseType[]>({
     queryKey: ["companyListData"],
     queryFn: fetchCompanyListData,
+    retry: 2,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
   return (
     <section className="lg:py-32 py-10 flex items-center justify-center">
