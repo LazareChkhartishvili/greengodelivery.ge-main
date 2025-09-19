@@ -1,7 +1,7 @@
 "use client";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { cartApi } from "@/lib/cart-api";
 import { getCartTokenLS } from "@/lib/cart-token";
 
@@ -24,18 +24,18 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     const token = getCartTokenLS();
     if (!token) return;
     const cart = await cartApi.get(token);
     setItems(cart?.items || []);
     setTotalPrice(cart?.total_price || 0);
     onCartChange?.(cart?.total_qty || 0);
-  };
+  }, [onCartChange]);
 
   useEffect(() => {
     refresh();
-  }, []);
+  }, [refresh]);
 
   const inc = async (productId: number) => {
     const token = getCartTokenLS();
