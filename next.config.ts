@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "greengo-api-production.up.railway.app/",
+        hostname: "greengo-api-production.up.railway.app",
         port: "",
         pathname: "/**",
       },
