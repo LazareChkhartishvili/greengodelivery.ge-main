@@ -192,7 +192,7 @@ const SingleCompanyContainer: React.FC = () => {
             "md:w-[260px]", // Desktop width
             "w-full", // Mobile width
             "fixed md:static", // Fixed on mobile, static on desktop
-            "left-0 right-0 top-15 md:z-0 z-50 py-2 md:py-0 px-4 md:px-0 md:bg-transparent md:bg-none md:dark:bg-transparent dark:bg-background bg-white " // Fixed positioning for mobile
+            "left-0 right-0 top-15 md:z-0 z-[45] py-2 md:py-0 px-4 md:px-0 md:bg-transparent md:bg-none md:dark:bg-transparent dark:bg-background bg-white " // Fixed positioning for mobile
           )}
         >
           <Search className="h-5 w-5 absolute mt-2 ml-2.5" />
@@ -220,7 +220,7 @@ const SingleCompanyContainer: React.FC = () => {
           <div className="mt-8 grid gap-8   md:grid-cols-[140px_1fr_260px] md:gap-6 ">
             {/* Sidebar Left */}
             <div
-              className="md:bg-transparent md:bg-none md:dark:bg-transparent dark:bg-background bg-white md:ml-0 ml-[-20px] w-full px-5 md:px-0 z-50 top-28 md:gap-0 gap-4 flex-row md:overflow-x-hidden overflow-x-scroll sticky md:top-24 flex h-fit md:flex-col  max-md:fixed font  truncate scrollbar-hide"
+              className="md:bg-transparent md:bg-none md:dark:bg-transparent dark:bg-background bg-white md:ml-0 ml-[-20px] w-full px-5 md:px-0 z-[40] top-28 md:gap-0 gap-4 flex-row md:overflow-x-hidden overflow-x-scroll sticky md:top-24 flex h-fit md:flex-col  max-md:fixed font  truncate scrollbar-hide"
               style={{
                 scrollbarWidth: "none", // Firefox
                 msOverflowStyle: "none", // IE 10+

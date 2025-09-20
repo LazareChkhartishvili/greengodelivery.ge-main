@@ -152,7 +152,7 @@ const HeaderContainer = () => {
               {isCartOpen && (
                 <>
                   <div
-                    className="fixed inset-0 bg-black/40 z-40"
+                    className="fixed inset-0 bg-black/40 z-[55]"
                     onClick={() => setIsCartOpen(false)}
                   />
                   <CartDrawer

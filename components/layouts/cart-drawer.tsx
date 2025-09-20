@@ -67,7 +67,7 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
   };
 
   return (
-    <div className="fixed right-0 top-0 h-full w-full max-w-[722px] bg-background text-foreground border-l border-border z-50 shadow-xl animate-slideIn flex flex-col">
+    <div className="fixed right-0 top-0 h-full w-full max-w-[722px] bg-background text-foreground border-l border-border z-[60] shadow-xl animate-slideIn flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <h2 className="text-xl font-bold">თქვენი შეკვეთა</h2>
         <div className="flex items-center gap-2">
