@@ -7,7 +7,7 @@ import { getCartTokenLS } from "@/lib/cart-token";
 
 interface CartDrawerProps {
   onClose: () => void;
-  onCartChange?: (totalQty: number) => void;
+  onCartChange?: (totalQty: number, totalPrice: number) => void;
 }
 type CartItem = {
   id: number;
@@ -30,7 +30,7 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
     const cart = await cartApi.get(token);
     setItems(cart?.items || []);
     setTotalPrice(cart?.total_price || 0);
-    onCartChange?.(cart?.total_qty || 0);
+    onCartChange?.(cart?.total_qty || 0, cart?.total_price || 0);
   }, [onCartChange]);
 
   useEffect(() => {

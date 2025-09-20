@@ -40,6 +40,7 @@ const HeaderContainer = () => {
   const [searchQueryState, setSearchQueryState] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [totalQty, setTotalQty] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [selectedCity, setSelectedCity] = useState("tskaltubo");
   const locale =
     typeof window !== "undefined" && window.location.pathname.startsWith("/en")
@@ -81,6 +82,7 @@ const HeaderContainer = () => {
       setCartTokenLS(token);
       const cart = await cartApi.get(token);
       setTotalQty(cart?.total_qty || 0);
+      setTotalPrice(cart?.total_price || 0);
     })();
   }, []);
 
@@ -240,9 +242,9 @@ const HeaderContainer = () => {
                 className="py-[8px] px-3 md:px-4 flex items-center gap-2 cursor-pointer border rounded-lg relative"
               >
                 <ShoppingCart size={19} />
-                {totalQty > 0 && (
+                {totalPrice > 0 && (
                   <span className="absolute -top-2 -right-2 text-xs bg-primary text-white rounded-full px-1.5 py-0.5">
-                    {totalQty}
+                    {totalPrice.toFixed(2)} ₾
                   </span>
                 )}
                 <p className="hidden md:flex">{scopedT("cart")}</p>
@@ -277,7 +279,10 @@ const HeaderContainer = () => {
                         setTotalQty(cart?.total_qty || 0);
                       }
                     }}
-                    onCartChange={(qty: number) => setTotalQty(qty)}
+                    onCartChange={(qty: number, price: number) => {
+                      setTotalQty(qty);
+                      setTotalPrice(price);
+                    }}
                   />
                 </>
               )}
