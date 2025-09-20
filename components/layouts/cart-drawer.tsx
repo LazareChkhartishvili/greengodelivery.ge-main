@@ -140,6 +140,67 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
             </div>
           ))
         )}
+
+        {/* Separator */}
+        <div className="border-t border-border my-4"></div>
+
+        {/* Recommended Section */}
+        <div className="px-4">
+          <h3 className="text-lg font-bold mb-4">თქვენთვის რეკომენდებული</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Recommended Item 1 */}
+            <div className="bg-muted rounded-lg p-3">
+              <Image
+                src="/khachapuri.jpg"
+                alt="იმერული ხაჭაპური"
+                width={120}
+                height={120}
+                className="rounded-lg object-cover w-full h-20 mb-2"
+              />
+              <p className="font-medium text-sm">იმერული ხაჭაპური</p>
+              <p className="text-sm text-muted-foreground">18.30 ₾</p>
+            </div>
+
+            {/* Recommended Item 2 */}
+            <div className="bg-muted rounded-lg p-3">
+              <Image
+                src="/adjaruli.jpg"
+                alt="აჭარული ხაჭაპური"
+                width={120}
+                height={120}
+                className="rounded-lg object-cover w-full h-20 mb-2"
+              />
+              <p className="font-medium text-sm">აჭარული ხაჭაპური</p>
+              <p className="text-sm text-muted-foreground">23.30 ₾</p>
+            </div>
+
+            {/* Recommended Item 3 */}
+            <div className="bg-muted rounded-lg p-3">
+              <Image
+                src="/lobiani.jpg"
+                alt="იმერული ლობიანი"
+                width={120}
+                height={120}
+                className="rounded-lg object-cover w-full h-20 mb-2"
+              />
+              <p className="font-medium text-sm">იმერული ლობიანი</p>
+              <p className="text-sm text-muted-foreground">16.30 ₾</p>
+            </div>
+
+            {/* Recommended Item 4 */}
+            <div className="bg-muted rounded-lg p-3">
+              <Image
+                src="/pizza.jpg"
+                alt="პიცა პეპერონი"
+                width={120}
+                height={120}
+                className="rounded-lg object-cover w-full h-20 mb-2"
+              />
+              <p className="font-medium text-sm">პიცა პეპერონი</p>
+              <p className="text-sm text-muted-foreground">25.30 ₾</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="p-4 border-t border-border space-y-3">
