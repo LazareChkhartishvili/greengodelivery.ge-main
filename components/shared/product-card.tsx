@@ -10,20 +10,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useCurrentLocale } from "@/locales/client";
-import { cartApi } from "@/lib/cart-api";
-import { getCartTokenLS, setCartTokenLS } from "@/lib/cart-token";
+import { useCart } from "@/contexts/cart-context";
 import { ShoppingCart, Eye, Heart, Star } from "lucide-react";
 
 function ProductCard({ product }: { product: ProductType }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function addToCart(product: any, qty = 1) {
-    let token = getCartTokenLS();
-    token = await cartApi.init(token || undefined);
-    setCartTokenLS(token);
-    await cartApi.add(token, product.id, qty);
-    // სურვილისამებრ: toast ან Drawer გახსნა
-  }
-
+  const { addToCart } = useCart();
   const locale = useCurrentLocale();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -87,7 +78,7 @@ function ProductCard({ product }: { product: ProductType }) {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                addToCart(product);
+                addToCart(product.id);
               }}
               className="w-full z-40 cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors duration-200 shadow-sm"
             >
@@ -151,7 +142,7 @@ function ProductCard({ product }: { product: ProductType }) {
               </DialogDescription>
 
               <button
-                onClick={() => addToCart(product)}
+                onClick={() => addToCart(product.id)}
                 className="w-full cursor-pointer transition-all hover:scale-105 duration-300 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-base font-medium hover:bg-primary/90 shadow-sm"
               >
                 <ShoppingCart className="w-5 h-5" />

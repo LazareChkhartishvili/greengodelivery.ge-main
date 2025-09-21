@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import { cartApi } from "@/lib/cart-api";
 import { getCartTokenLS } from "@/lib/cart-token";
+import { useCart } from "@/contexts/cart-context";
 
 interface CartDrawerProps {
   onClose: () => void;
-  onCartChange?: (totalQty: number, totalPrice: number) => void;
 }
 type CartItem = {
   id: number;
@@ -20,7 +20,8 @@ type CartItem = {
   picture?: string | null;
 };
 
-export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
+export const CartDrawer = ({ onClose }: CartDrawerProps) => {
+  const { refreshCart } = useCart();
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -30,8 +31,24 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
     const cart = await cartApi.get(token);
     setItems(cart?.items || []);
     setTotalPrice(cart?.total_price || 0);
-    onCartChange?.(cart?.total_qty || 0, cart?.total_price || 0);
-  }, [onCartChange]);
+    refreshCart(); // Update global cart state
+  }, [refreshCart]);
+
+  // Add product to cart and auto-open
+  const addProductAndOpenCart = useCallback(
+    async (productId: number, qty = 1) => {
+      const token = getCartTokenLS();
+      if (!token) return;
+
+      try {
+        await cartApi.add(token, productId, qty);
+        await refresh();
+      } catch (error) {
+        console.error("Failed to add product to cart:", error);
+      }
+    },
+    [refresh]
+  );
 
   useEffect(() => {
     refresh();
@@ -149,7 +166,13 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
           <h3 className="text-lg font-bold mb-4">თქვენთვის რეკომენდებული</h3>
           <div className="grid grid-cols-2 gap-3">
             {/* Recommended Item 1 */}
-            <div className="bg-muted rounded-lg p-3">
+            <div
+              className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => {
+                // Add to cart and auto-open
+                addProductAndOpenCart(1, 1); // Product ID 1, Quantity 1
+              }}
+            >
               <Image
                 src="/khachapuri.jpg"
                 alt="იმერული ხაჭაპური"
@@ -162,7 +185,13 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
             </div>
 
             {/* Recommended Item 2 */}
-            <div className="bg-muted rounded-lg p-3">
+            <div
+              className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => {
+                // Add to cart and auto-open
+                addProductAndOpenCart(2, 1); // Product ID 2, Quantity 1
+              }}
+            >
               <Image
                 src="/adjaruli.jpg"
                 alt="აჭარული ხაჭაპური"
@@ -175,7 +204,13 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
             </div>
 
             {/* Recommended Item 3 */}
-            <div className="bg-muted rounded-lg p-3">
+            <div
+              className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => {
+                // Add to cart and auto-open
+                addProductAndOpenCart(3, 1); // Product ID 3, Quantity 1
+              }}
+            >
               <Image
                 src="/lobiani.jpg"
                 alt="იმერული ლობიანი"
@@ -188,7 +223,13 @@ export const CartDrawer = ({ onClose, onCartChange }: CartDrawerProps) => {
             </div>
 
             {/* Recommended Item 4 */}
-            <div className="bg-muted rounded-lg p-3">
+            <div
+              className="bg-muted rounded-lg p-3 cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => {
+                // Add to cart and auto-open
+                addProductAndOpenCart(4, 1); // Product ID 4, Quantity 1
+              }}
+            >
               <Image
                 src="/pizza.jpg"
                 alt="პიცა პეპერონი"

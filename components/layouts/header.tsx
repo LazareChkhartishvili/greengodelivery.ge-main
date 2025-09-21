@@ -31,6 +31,7 @@ import { CartDrawer } from "./cart-drawer";
 import { CityType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useCart } from "@/contexts/cart-context";
 
 const HeaderContainer = () => {
   const router = useRouter();
@@ -38,10 +39,11 @@ const HeaderContainer = () => {
   const { getQueryParamByKey } = useSearchCustomParams();
   const searchQuery = getQueryParamByKey("search") || "";
   const [searchQueryState, setSearchQueryState] = useState("");
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [totalQty, setTotalQty] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [selectedCity, setSelectedCity] = useState("tskaltubo");
+
+  // Use cart context
+  const { totalQty, totalPrice, isCartOpen, setIsCartOpen, refreshCart } =
+    useCart();
   const locale =
     typeof window !== "undefined" && window.location.pathname.startsWith("/en")
       ? "en"
@@ -74,17 +76,6 @@ const HeaderContainer = () => {
       if (searchTimeout.current) clearTimeout(searchTimeout.current);
     };
   }, [searchQuery]);
-
-  useEffect(() => {
-    (async () => {
-      const existing = getCartTokenLS();
-      const token = await cartApi.init(existing || undefined);
-      setCartTokenLS(token);
-      const cart = await cartApi.get(token);
-      setTotalQty(cart?.total_qty || 0);
-      setTotalPrice(cart?.total_price || 0);
-    })();
-  }, []);
 
   // Fetch cities from API
   const fetchCities = async (): Promise<CityType[]> => {
@@ -270,20 +261,7 @@ const HeaderContainer = () => {
                     className="fixed inset-0 bg-black/40 z-[55]"
                     onClick={() => setIsCartOpen(false)}
                   />
-                  <CartDrawer
-                    onClose={async () => {
-                      setIsCartOpen(false);
-                      const token = getCartTokenLS();
-                      if (token) {
-                        const cart = await cartApi.get(token);
-                        setTotalQty(cart?.total_qty || 0);
-                      }
-                    }}
-                    onCartChange={(qty: number, price: number) => {
-                      setTotalQty(qty);
-                      setTotalPrice(price);
-                    }}
-                  />
+                  <CartDrawer onClose={() => setIsCartOpen(false)} />
                 </>
               )}
             </div>
