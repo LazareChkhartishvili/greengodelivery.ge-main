@@ -22,6 +22,7 @@ export interface CategoryResponseType {
 }
 
 export interface ProductType {
+  id: number;
   description_en: string | null;
   description_ka: string | null;
   name_en: string;
