@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { MapPin, Star } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { motion, useAnimate, stagger } from "framer-motion"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
-import { routes } from "@/config/routes"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MapPin, Star } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { motion, useAnimate, stagger } from "framer-motion";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Button } from "@/components/ui/button";
+import { routes } from "@/config/routes";
 
 import {
   Form,
@@ -15,30 +15,30 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import Image from "next/image"
-import { useEffect } from "react"
-import { useScopedI18n } from "@/locales/client"
-import Link from "next/link"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { useEffect } from "react";
+import { useScopedI18n } from "@/locales/client";
+import Link from "next/link";
 
 const formSchema = z
   .object({
     email: z.string().email({ message: "Invalid email address" }),
   })
-  .required({ email: true })
+  .required({ email: true });
 
 function HeroFrom() {
-  const scopedT = useScopedI18n("mainPage")
+  const scopedT = useScopedI18n("mainPage");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    console.log(values);
   }
 
   return (
@@ -83,30 +83,30 @@ function HeroFrom() {
         </div>
       </form>
     </Form>
-  )
+  );
 }
 
 const SlideContainer = () => {
-  const scopedT = useScopedI18n("mainPage")
-  const words = scopedT("mainTitle")
-  const [scope, animate] = useAnimate()
-  const wordsArray = words.split(" ")
+  const scopedT = useScopedI18n("mainPage");
+  const words = scopedT("mainTitle");
+  const [scope, animate] = useAnimate();
+  const wordsArray = words.split(" ");
 
   useEffect(() => {
     const handleScroll = () => {
       document.documentElement.style.setProperty(
         "--scroll-y",
         `${window.scrollY}px`
-      )
-    }
+      );
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const duration = 1
+      const duration = 1;
       animate(
         "span",
         {
@@ -117,12 +117,12 @@ const SlideContainer = () => {
           duration: duration ? duration : 1,
           delay: stagger(0.3),
         }
-      )
-    }, 1 * 1000) // Replace `x` with the number of seconds
+      );
+    }, 1 * 1000); // Replace `x` with the number of seconds
 
     // Cleanup the timeout on component unmount
-    return () => clearTimeout(timeout)
-  }, [animate])
+    return () => clearTimeout(timeout);
+  }, [animate]);
 
   const renderWords = () => {
     return (
@@ -138,11 +138,11 @@ const SlideContainer = () => {
             >
               {word}{" "}
             </motion.span>
-          )
+          );
         })}
       </motion.div>
-    )
-  }
+    );
+  };
 
   return (
     <section className="flex font-dm_sans bg-background py-12 md:py-20 items-center justify-center ">
@@ -181,7 +181,7 @@ const SlideContainer = () => {
                 >
                   <Image
                     fill
-                    src="https://images.pexels.com/photos/3434533/pexels-photo-3434533.jpeg"
+                    src="/images/greengo1.jpg"
                     alt="delivery image"
                     className="block size-full rounded-lg object-cover"
                   />
@@ -195,7 +195,7 @@ const SlideContainer = () => {
                 >
                   <Image
                     fill
-                    src="https://images.pexels.com/photos/4464817/pexels-photo-4464817.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    src="/images/greengo2.jpg"
                     alt="delivery image"
                     className="block size-full rounded-lg object-cover"
                   />
@@ -209,7 +209,7 @@ const SlideContainer = () => {
                 >
                   <Image
                     fill
-                    src="https://images.pexels.com/photos/4440792/pexels-photo-4440792.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    src="/images/greengo3.jpg"
                     alt="delivery image"
                     className="block size-full rounded-lg object-cover"
                   />
@@ -288,7 +288,7 @@ const SlideContainer = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default SlideContainer
+export default SlideContainer;
